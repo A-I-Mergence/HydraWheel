@@ -24,6 +24,8 @@ myHydraWheel::myHydraWheel():HydraComponent("myHydraWheel", "myHydraWheel/type")
     addHydraFunction(new HydraFunction("stop",        callback(this, &myHydraWheel::stop),         0, 11));
     addHydraFunction(new HydraFunction("save",        callback(this, &myHydraWheel::setSaveMode),  1, 12));
     addHydraFunction(new HydraFunction("pwm",         callback(this, &myHydraWheel::setPwm),       1, 14));
+    addHydraFunction(new HydraFunction("acc",         callback(this, &myHydraWheel::setAcceleration),   1, 15));
+    addHydraFunction(new HydraFunction("brk",         callback(this, &myHydraWheel::setBraking),        1, 16));
     addHydraFunction(new HydraFunction("setChannel",  callback(this, &myHydraWheel::setChannel),   1));
 
 
@@ -34,7 +36,7 @@ void myHydraWheel::__loop__()
 {
     if (_modeSave) {
         // printf("time : %f \n",_t->read());
-        if (_t->read_ms() > 50){
+        if (_t->read_ms() > 100){
             // print("timeloop \n");
             if (!_FlagNewCommande){
                 // print("flag \n");
@@ -76,6 +78,26 @@ HydraData* myHydraWheel::setPwm(std::vector<HydraData*> parameters){
     float _pwm = parameters[0]->get<float>() > 1 ? 1 : parameters[0]->get<float>() < -1 ? -1 : parameters[0]->get<float>();
     _wheel->StopRegule();
     _wheel->SetPWM(_pwm);
+    return NULL;
+}
+
+HydraData* myHydraWheel::setAcceleration(std::vector<HydraData*> parameters){
+    float newAcceleration = parameters[0]->get<float>();
+    _wheel->setAcceleration(newAcceleration);
+
+    // printf("setAcceleration:\r\n");
+    // printf("\tsend2can 15 %.2f\r\n", newAcceleration);
+
+    return NULL;
+}
+
+HydraData* myHydraWheel::setBraking(std::vector<HydraData*> parameters){
+    float newBraking = parameters[0]->get<float>();
+    _wheel->setBraking(newBraking);
+
+    // printf("setBraking:\r\n");
+    // printf("\tsend2can 16 %.2f\r\n", newBraking);
+
     return NULL;
 }
 

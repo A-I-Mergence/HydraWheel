@@ -23,6 +23,8 @@ class myHydraWheel: public HydraComponent{
         HydraData* stop(std::vector<HydraData*> parameters);
         HydraData* setSaveMode(std::vector<HydraData*> parameters);
         HydraData* setPwm(std::vector<HydraData*> parameters);
+        HydraData* setAcceleration(std::vector<HydraData*> parameters);
+        HydraData* setBraking(std::vector<HydraData*> parameters);
         HydraData* setChannel(std::vector<HydraData*> parameters);
 
 
