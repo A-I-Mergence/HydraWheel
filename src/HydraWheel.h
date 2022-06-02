@@ -33,12 +33,15 @@ class myHydraWheel: public HydraComponent{
 
         BusOut * _bus;
 
+        Timer       *_t;
+
         float   _des_spd;
         int     _type_move;
         int _toto;
 
         // Move
         bool _modeSave;
+        bool _FlagNewCommande;
         
 };
 #endif

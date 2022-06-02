@@ -13,6 +13,13 @@ myHydraWheel::myHydraWheel():HydraComponent("myHydraWheel", "myHydraWheel/type")
     // _t->start();
     _des_spd  = 0;
 
+    // Timer
+    _t = new Timer;
+    _t->start();
+
+    _modeSave = true;
+    _FlagNewCommande = true;
+
     addHydraFunction(new HydraFunction("move",        callback(this, &myHydraWheel::move),         1, 10));
     addHydraFunction(new HydraFunction("stop",        callback(this, &myHydraWheel::stop),         0, 11));
     addHydraFunction(new HydraFunction("save",        callback(this, &myHydraWheel::setSaveMode),  1, 12));
@@ -25,21 +32,27 @@ myHydraWheel::myHydraWheel():HydraComponent("myHydraWheel", "myHydraWheel/type")
 
 void myHydraWheel::__loop__()
 {
-//  if (_t->read_ms() > 100){
-//         // printf("_spd = %f\t_u = %f\t_e = %f\t_com = %f\r\n", _spd, _u[2], _e[2], _com[2]);
-//         // printf("_spd = %f\r\n", _spd);
-//         _t->reset();
-//         _t->start();
-//     }
+    if (_modeSave) {
+        // printf("time : %f \n",_t->read());
+        if (_t->read_ms() > 50){
+            // print("timeloop \n");
+            if (!_FlagNewCommande){
+                // print("flag \n");
+                _wheel->StartRegule();
+                _wheel->SetSpeed(0);
+            }
+            _t->reset();
+            _t->start();
+        }
+    }
 }
 
-void myHydraWheel::__on__(std::string event_name, std::map<std::string, HydraData *> data)
-{
-}
+void myHydraWheel::__on__(std::string event_name, std::map<std::string, HydraData *> data){}
 
 // Component function
 HydraData* myHydraWheel::move(std::vector<HydraData*> parameters)
 {
+    _FlagNewCommande = false; 
     int param_1 = parameters[0]->get<int>();
     _wheel->StartRegule();
     _wheel->SetSpeed(param_1);
